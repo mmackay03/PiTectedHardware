@@ -23,7 +23,7 @@ public class AlarmSystem {
 			try {
 				db.dbConnection();
 				//get all user IDs and codes
-				ResultSet rset = db.getStatement().executeQuery("SELECT `id`, `code` FROM `users`;");
+				ResultSet rset = db.getStatement().executeQuery("SELECT `id`, `" + attribute +"` FROM `users`;");
 				rset.next();//set to first result
 				//get the first code returned and check if it equals the entered code
 				if(attributeValue.equals(rset.getString(attribute))){//If authorized user

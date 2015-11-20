@@ -45,7 +45,7 @@ public class Keypad {
 		      try { Thread.sleep(200L); } catch (Exception ex) {}
 		    }
 	//	    System.out.println("Entered: " + enteredCode);
-		    sys.getCheckCode("code", enteredCode, status);
+		    sys.getCheckCode("keyCode", enteredCode, status);
 		    enteredCode ="";//reset the entered code for future entries
 		    kbc.shutdown();//gpio shutdown
 		}
