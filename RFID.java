@@ -30,7 +30,7 @@ public class RFID {
     static int status;
     static boolean stat;
     static DBConnection db = new DBConnection();
-    static statusIndicator si = new statusIndicator();
+    static StatusIndicator si = new StatusIndicator();
     final static GpioController gpio = GpioFactory.getInstance();
     final static GpioPinDigitalOutput rfidReader = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "RFID", PinState.LOW);
     // initializes the serial port on the PI
@@ -64,11 +64,11 @@ public class RFID {
                             //debug
                             System.out.println("Data Recieved: " + cutCard);
                             //Changes the reader back to powerstate low and able to read info again
-                            rfidReader.low();
                             status = si.changeStatus();
                             sys.getCheckCode("RFIDCode", cutCard, status);
                             card = "";
                             cutCard = "";
+                            rfidReader.low();
                         }
                         rfidReader.low();
                     }
