@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 20, 2015 at 04:59 AM
+-- Generation Time: Nov 25, 2015 at 08:19 PM
 -- Server version: 5.5.32
 -- PHP Version: 5.4.16
 
@@ -30,10 +30,21 @@ USE `pitected`;
 
 CREATE TABLE IF NOT EXISTS `door` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` int(20) NOT NULL,
+  `name` varchar(20) NOT NULL,
+  `status` binary(1) NOT NULL,
   `system_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+
+--
+-- Dumping data for table `door`
+--
+
+INSERT INTO `door` (`id`, `name`, `status`, `system_id`) VALUES
+(1, 'Door 1', '0', 1),
+(2, 'Door 2', '0', 1),
+(3, 'Door 3', '0', 1),
+(4, 'Door 4', '0', 1);
 
 -- --------------------------------------------------------
 
@@ -58,9 +69,17 @@ CREATE TABLE IF NOT EXISTS `door_log` (
 CREATE TABLE IF NOT EXISTS `motion` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
+  `status` binary(1) NOT NULL DEFAULT '0',
   `system_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `motion`
+--
+
+INSERT INTO `motion` (`id`, `name`, `status`, `system_id`) VALUES
+(1, 'Motion 1', '0', 1);
 
 -- --------------------------------------------------------
 
