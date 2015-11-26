@@ -18,6 +18,7 @@ public class StatusIndicator
     static DBConnection db = new DBConnection();//create a new object of database connection class
     private static User currUser = new User();//create a new object of the user class
     public int status;
+    public boolean rsStatus;
     public static void main(String[] args) {
     }
   
@@ -25,11 +26,17 @@ public class StatusIndicator
     {
         try 
         {
+            //DEBUG
+            //System.out.println("CHECK STATS" + rsStatus); DEBUG
             db.dbConnection();
             //get all user IDs and codes
             ResultSet rset = db.getStatement().executeQuery("SELECT `status` FROM `system` WHERE `id` = 1;");
-            //System.out.println(rset.next());
-            status = (rset.next()) ? 1 : 0;           
+            while (rset.next())
+            {
+                rsStatus = rset.getBoolean(1);
+                //DEBUG
+                //System.out.println("WHILE " + rsStatus); DEBUG
+            }
             
         }
         catch (ClassNotFoundException | InstantiationException| IllegalAccessException | SQLException e) 
@@ -40,15 +47,20 @@ public class StatusIndicator
     }
     public int changeStatus()
     {
-        if (status == 1)
+        //DEBUG
+        //System.out.println("TEST !"); DEBUG
+        checkStatus();
+        if (rsStatus == true)
         {
             status = 0;
-            return status;
+            //DEBUG
+            //System.out.println("CHANGE STATUS" + status); DEBUG
         }
-        else if (status == 0)
+        else if (rsStatus == false)
         {
             status = 1;
-            return status;
+            //DEBUG
+            //System.out.println("CHANGE STATUS" + status); DEBUG
         }
         return status;
     }
