@@ -5,6 +5,7 @@
  * This class is meant to be implemented in classes involving the system.
  * Addition methods/variables are to be added.
  */
+import com.pi4j.component.lcd.LCDTextAlignment;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -13,6 +14,7 @@ public class AlarmSystem {
 
 	static DBConnection db = new DBConnection();//create a new object of database connection class
 	private static User currUser = new User();//create a new object of the user class
+        private static LCD lcd = new LCD();
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
@@ -65,10 +67,17 @@ public class AlarmSystem {
 			String log = "INSERT INTO `system_log` (`system_id`, `user_id`, `status`) VALUES (1,"
 					+ currUser.getUserID() + ", " + status +");";
 			db.getStatement().executeUpdate(log);
+                        lcd.writeln(0, "System Status", LCDTextAlignment.ALIGN_CENTER);
 			if (status == 1){
 				System.out.println("System armed.");
+                                lcd.clear(1);
+                                lcd.backlight(1);
+                                lcd.writeln(1, "System Armed", LCDTextAlignment.ALIGN_CENTER);
 			}else if (status == 0){
 				System.out.println("System disarmed.");
+                                lcd.clear(1);
+                                lcd.backlight(1);
+                                lcd.writeln(1, "System Disarmed", LCDTextAlignment.ALIGN_CENTER);
 			}
 		
 	//		System.out.println("INSERT INTO `system_log` (`system_id`, `user_id`, `status`) VALUES (1,"
