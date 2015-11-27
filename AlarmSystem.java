@@ -5,54 +5,67 @@
  * This class is meant to be implemented in classes involving the system.
  * Addition methods/variables are to be added.
  */
+
 import com.pi4j.component.lcd.LCDTextAlignment;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-public class AlarmSystem {
+public class AlarmSystem extends RFID {
 
 	static DBConnection db = new DBConnection();//create a new object of database connection class
 	private static User currUser = new User();//create a new object of the user class
-        private static LCD lcd = new LCD();
-	public static void main(String[] args) {
+        private static Encrypt enc = new Encrypt();
+        private static String hashAttribute;
+	public static void main(String[] args) 
+        {
 		// TODO Auto-generated method stub
 
 	}
 	
 	//check that the user is Authorized and call the armDisarm method
-	public void getCheckCode(String attribute, String attributeValue, int status){
-			try {
-				db.dbConnection();
-				//get all user IDs and codes
-				ResultSet rset = db.getStatement().executeQuery("SELECT `id`, `" + attribute +"` FROM `users`;");
-				rset.next();//set to first result
-				//get the first code returned and check if it equals the entered code
-				if(attributeValue.equals(rset.getString(attribute))){//If authorized user
-					System.out.println("AUTHED");//debug
-	//				System.out.println(rset.getInt("id"));//debugging: show user id
-					currUser.setUserID(rset.getInt("id"));
-					armDisarm(status);//Update the status of the system
-				}
-				//get the rest of the codes returned and chick if it equals the entered code
-				while (rset.next()) {
+	public void getCheckCode(String attribute, String attributeValue, int status)
+        {
+            //pass the value into set password so it can be encrypted into a hash value
+            enc.setPassword(attributeValue);
+            //Run the method to encrypt the password
+            enc.encryptPassword();
+            //Grab the hash value and store into the hashAttribute value.
+            hashAttribute = enc.getGeneratedPassword();
+            try {
+                    db.dbConnection();
+                    //get all user IDs and codes
+                    ResultSet rset = db.getStatement().executeQuery("SELECT `id`, `" + attribute +"` FROM `users`;");
+                    rset.next();//set to first result
+                    //get the first code returned and check if it equals the entered code
+
+                    if(hashAttribute.equals(rset.getString(attribute)))
+                    {//If authorized user
+                            System.out.println("AUTHED");//debug
+//				System.out.println(rset.getInt("id"));//debugging: show user id
+                            currUser.setUserID(rset.getInt("id"));
+                            armDisarm(status);//Update the status of the system
+                    }
+                    //get the rest of the codes returned and chick if it equals the entered code
+                    while (rset.next()) {
 //					System.out.println(rset.getString(attribute));//debugging: show each code in database after id 1
-					if(attributeValue.equals(rset.getString(attribute))){//If authorized user
-						System.out.println("Authorized User");//debug
-						currUser.setUserID(rset.getInt("id"));//set the user id of the corresponding code
-						armDisarm(status);//Update the status of the system
-					}
-					
-					
-				}
-				db.conClose();//close connection to not effect future connection
-			} catch (ClassNotFoundException | InstantiationException
-					| IllegalAccessException | SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                            if(hashAttribute.equals(rset.getString(attribute))){//If authorized user
+                                    System.out.println("Authorized User");//debug
+                                    currUser.setUserID(rset.getInt("id"));//set the user id of the corresponding code
+                                    armDisarm(status);//Update the status of the system
+                            }
+
+
+                    }
+                    db.conClose();//close connection to not effect future connection
+                    hashAttribute = "";
+            } catch (ClassNotFoundException | InstantiationException
+                            | IllegalAccessException | SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+            }
 			
-		}
+        }
 	
 
 	//change the status of the system and log the change
