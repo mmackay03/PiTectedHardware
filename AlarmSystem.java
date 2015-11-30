@@ -11,11 +11,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-public class AlarmSystem extends RFID {
-
-	static DBConnection db = new DBConnection();//create a new object of database connection class
-	private static User currUser = new User();//create a new object of the user class
+public class AlarmSystem extends RFID 
+{
+        //create a new object of database connection class
+	static DBConnection db = new DBConnection();
+        //create a new object of the user class
+	private static User currUser = new User();
+        //Creates a new object of the Encrypt class
         private static Encrypt enc = new Encrypt();
+        //Creates a new String labeled hashAttribute
         private static String hashAttribute;
 	public static void main(String[] args) 
         {
