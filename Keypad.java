@@ -11,9 +11,10 @@ public class Keypad {
 
 	//initiate variables
 	static String enteredCode = "";
-	static char arm = '#';
-	static char disarm ='*';
-	static int status = 0;
+	static char armDisarm = '#';
+//	static char disarm ='*';
+	public static StatusIndicator si = new StatusIndicator();
+	public static int status;
 	static AlarmSystem sys = new AlarmSystem();//create a new object of the AlarmSystem class
 	
 	//main
@@ -30,21 +31,25 @@ public class Keypad {
 		    {
 		    
 		      char inputChar = kbc.getKey();
-		      if (arm == inputChar){//if # button is entered end the loop and arm the system is authorized user
+		      if (armDisarm == inputChar){//if # button is entered end the loop and arm the system is authorized user
 		    	  go = false;//end loop
-		    	  status = 1;
-		      }else if(disarm == inputChar){//if * button is entered end the loop and un-arm the system is authorized user
-			        go = false;//end loop
-			        status = 0;
+//		    	  status = 1;
+		    	  
+		    	  System.out.println("STATUS: " + status);
+//		      }else if(disarm == inputChar){//if * button is entered end the loop and un-arm the system is authorized user
+//			        go = false;//end loop
+//			        status = 0;
 		      }else{//continuously add each character pressed (Except * and # characters)
 		    	  enteredCode += inputChar;
 		      }
-//		      System.out.println("Char: " + inputChar);//debugging: show key pressed
+		      System.out.println("Char: " + inputChar);//debugging: show key pressed
 		  
 		      
 		      try { Thread.sleep(200L); } catch (Exception ex) {}
 		    }
 	//	    System.out.println("Entered: " + enteredCode);
+		    status = si.changeStatus();
+		    System.out.println("STATUS AFTER: " + status);
 		    sys.getCheckCode("keyCode", enteredCode, status);
 		    enteredCode ="";//reset the entered code for future entries
 		    kbc.shutdown();//gpio shutdown
