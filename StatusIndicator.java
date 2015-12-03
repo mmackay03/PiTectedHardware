@@ -1,8 +1,12 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
 /**
  *
  * @author Bryce Renninger
- *         PiTechted
  */
 
 import java.sql.ResultSet;
@@ -11,13 +15,9 @@ import java.sql.SQLException;
 
 public class StatusIndicator 
 {
-    //create a new object of database connection class
-    static DBConnection db = new DBConnection();
-    //create a new object of the user class
-    private static User currUser = new User();
-    //Creates an int called status
+    static DBConnection db = new DBConnection();//create a new object of database connection class
+    private static User currUser = new User();//create a new object of the user class
     public int status;
-    //Created a boolean called rsStatus
     public boolean rsStatus;
     public static void main(String[] args) {
     }
@@ -28,16 +28,15 @@ public class StatusIndicator
         {
             //DEBUG
             //System.out.println("CHECK STATS" + rsStatus); DEBUG
-            //Starts the connection to the database
             db.dbConnection();
-            //Grabs the system info from the database
+            //Grabs the system info
             ResultSet rset = db.getStatement().executeQuery("SELECT `status` FROM `system` WHERE `id` = 1;");
             while (rset.next())
             {
                 //Gets the TinyInt status value from the database and assigns it to the rsStatus variable
                 rsStatus = rset.getBoolean(1);
                 //DEBUG
-                System.out.println("WHILE " + rsStatus); 
+                //System.out.println("WHILE " + rsStatus); DEBUG
             }
             
         }
