@@ -29,11 +29,10 @@ public class StatusIndicator
             //DEBUG
             //System.out.println("CHECK STATS" + rsStatus); DEBUG
             db.dbConnection();
-            //Grabs the system info
+            //get all user IDs and codes
             ResultSet rset = db.getStatement().executeQuery("SELECT `status` FROM `system` WHERE `id` = 1;");
             while (rset.next())
             {
-                //Gets the TinyInt status value from the database and assigns it to the rsStatus variable
                 rsStatus = rset.getBoolean(1);
                 //DEBUG
                 //System.out.println("WHILE " + rsStatus); DEBUG
@@ -51,20 +50,17 @@ public class StatusIndicator
         //DEBUG
         //System.out.println("TEST !"); DEBUG
         checkStatus();
-        //Checks if the System is armed or disarmed
         if (rsStatus == true)
         {
-            //Changes the status to 0
             status = 0;
             //DEBUG
-            //System.out.println("CHANGE STATUS" + status); 
+            //System.out.println("CHANGE STATUS" + status); DEBUG
         }
         else if (rsStatus == false)
         {
-            //Changes the status to 1
             status = 1;
             //DEBUG
-            //System.out.println("CHANGE STATUS" + status); 
+            //System.out.println("CHANGE STATUS" + status); DEBUG
         }
         return status;
     }

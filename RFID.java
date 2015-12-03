@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 public class RFID {
    
     public static int status;
+    public static boolean stat;
     public static DBConnection db = new DBConnection();
     public static StatusIndicator si = new StatusIndicator();
     final public static GpioController gpio = GpioFactory.getInstance();
@@ -36,9 +37,7 @@ public class RFID {
     final public static Serial serialPort = SerialFactory.createInstance();
     public static String card = "";
     public static String cutCard = "";  
-    public static LCD lcd = new LCD();
     public static AlarmSystem sys = new AlarmSystem();
-    
     
     
     public static void main(String args[]) throws InterruptedException, UnsupportedEncodingException  
@@ -53,9 +52,8 @@ public class RFID {
                 {
                     try
                     {
-                        //Shuts down the RFID so it can't read anymore
                         rfidReader.high();
-                        Thread.sleep(5000);
+                        Thread.sleep(1000);
                          // Grabs the data from the card and inputs it into a string.
                         card = event.getData();
                         // A while statement that makes sure the data grabbed is the full RFID number and not a partial due to interference
@@ -64,16 +62,14 @@ public class RFID {
                             // Gets rid of the new line character in the beginning of the card. And gets rid of all characters after the last digit of the RFID number.
                             cutCard = card.substring(1,10);
                             //debug
-                            System.out.println("Data Recieved: " + cutCard);
+                            //System.out.println("Data Recieved: " + cutCard);
                             //Changes the reader back to powerstate low and able to read info again
                             status = si.changeStatus();
                             //DEBUG
                             //System.out.println("RFID Status = " + status); 
                             sys.getCheckCode("RFIDCode", cutCard, status);
-                            //Resets both variables back to blank.
                             card = "";
                             cutCard = "";
-                            //Activates the RFID so it can read again.
                             rfidReader.low();
                         }
                         rfidReader.low();

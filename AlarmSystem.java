@@ -80,25 +80,16 @@ public class AlarmSystem extends RFID {
 			String log = "INSERT INTO `system_log` (`system_id`, `user_id`, `status`) VALUES (1,"
 					+ currUser.getUserID() + ", " + status +");";
 			db.getStatement().executeUpdate(log);
-                        //Writes to the LCD and displays the System Status on the top line.
                         lcd.writeln(0, "System Status", LCDTextAlignment.ALIGN_CENTER);
 			if (status == 1){
-                                //Debug
 				System.out.println("System armed.");
-                                //Clears the second line on the LCD
                                 lcd.clear(1);
-                                //Activates the backlight
                                 lcd.backlight(1);
-                                //Writes to the second line on the LCD
                                 lcd.writeln(1, "System Armed", LCDTextAlignment.ALIGN_CENTER);
 			}else if (status == 0){
-                                //Debug
 				System.out.println("System disarmed.");
-                                //Clears the second line on the LCD
                                 lcd.clear(1);
-                                //Activates the LCD
                                 lcd.backlight(1);
-                                //Writes to the second line on the LCD
                                 lcd.writeln(1, "System Disarmed", LCDTextAlignment.ALIGN_CENTER);
 			}
 		
