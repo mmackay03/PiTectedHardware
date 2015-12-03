@@ -10,14 +10,17 @@ public class Encrypt
         {
             
 	}
+        //You set the password that you want to turn into a hash.
         public void setPassword(String password)
         {
             this.password = password;
         }
+        //Grabs the password that was just turned into a Hash
         public String getGeneratedPassword()
         {
             return generatedPassword;
         }
+        //This fucntion takes the password and generates it into a Hash
         public void encryptPassword()
         {
             try {
@@ -41,6 +44,7 @@ public class Encrypt
             {
                     e.printStackTrace();
             }
-            System.out.println(generatedPassword);
+            //Debug
+            //System.out.println(generatedPassword);
         }
 }

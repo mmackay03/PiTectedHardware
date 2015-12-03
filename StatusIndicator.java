@@ -29,7 +29,11 @@ public class StatusIndicator
             //DEBUG
             //System.out.println("CHECK STATS" + rsStatus); DEBUG
             db.dbConnection();
+<<<<<<< HEAD
             //get all user IDs and codes
+=======
+            //Grabs the system info
+>>>>>>> parent of f699887... My latest updated version
             ResultSet rset = db.getStatement().executeQuery("SELECT `status` FROM `system` WHERE `id` = 1;");
             while (rset.next())
             {
