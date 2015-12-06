@@ -4,7 +4,7 @@ require('header.php');
   
 
 
-$result = $connection->query("SELECT keyCode FROM users");
+$result = $connection->query("SELECT username, keyCode FROM users");
 
 
 $user = array();
