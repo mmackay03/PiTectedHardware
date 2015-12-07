@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 25, 2015 at 08:19 PM
+-- Generation Time: Dec 06, 2015 at 02:56 AM
 -- Server version: 5.5.32
 -- PHP Version: 5.4.16
 
@@ -31,7 +31,7 @@ USE `pitected`;
 CREATE TABLE IF NOT EXISTS `door` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
-  `status` binary(1) NOT NULL,
+  `status` int(1) NOT NULL,
   `system_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
@@ -41,10 +41,10 @@ CREATE TABLE IF NOT EXISTS `door` (
 --
 
 INSERT INTO `door` (`id`, `name`, `status`, `system_id`) VALUES
-(1, 'Door 1', '0', 1),
-(2, 'Door 2', '0', 1),
-(3, 'Door 3', '0', 1),
-(4, 'Door 4', '0', 1);
+(1, 'Door 1', 0, 1),
+(2, 'Door 2', 0, 1),
+(3, 'Door 3', 0, 1),
+(4, 'Door 4', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -55,10 +55,18 @@ INSERT INTO `door` (`id`, `name`, `status`, `system_id`) VALUES
 CREATE TABLE IF NOT EXISTS `door_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `door_id` int(11) NOT NULL,
-  `status` binary(1) NOT NULL,
+  `status` int(1) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `door_log`
+--
+
+INSERT INTO `door_log` (`id`, `door_id`, `status`, `timestamp`) VALUES
+(1, 1, 0, '2015-12-01 06:00:00'),
+(2, 2, 1, '2015-12-02 06:00:00');
 
 -- --------------------------------------------------------
 
@@ -69,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `door_log` (
 CREATE TABLE IF NOT EXISTS `motion` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
-  `status` binary(1) NOT NULL DEFAULT '0',
+  `status` int(1) NOT NULL DEFAULT '0',
   `system_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
@@ -79,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `motion` (
 --
 
 INSERT INTO `motion` (`id`, `name`, `status`, `system_id`) VALUES
-(1, 'Motion 1', '0', 1);
+(1, 'Motion 1', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -90,10 +98,18 @@ INSERT INTO `motion` (`id`, `name`, `status`, `system_id`) VALUES
 CREATE TABLE IF NOT EXISTS `motion_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `motion_id` int(11) NOT NULL,
-  `status` binary(1) NOT NULL,
+  `status` int(1) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `motion_log`
+--
+
+INSERT INTO `motion_log` (`id`, `motion_id`, `status`, `timestamp`) VALUES
+(1, 1, 1, '2015-12-05 06:22:46'),
+(2, 1, 0, '2015-12-03 06:00:00');
 
 -- --------------------------------------------------------
 
@@ -121,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `system` (
   `staticIP` varchar(15) NOT NULL,
   `passphrase` char(32) NOT NULL,
   `name` varchar(30) NOT NULL,
-  `status` binary(1) NOT NULL,
+  `status` int(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
@@ -130,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `system` (
 --
 
 INSERT INTO `system` (`id`, `staticIP`, `passphrase`, `name`, `status`) VALUES
-(1, '192.168.1.3', 'phassphrase', 'system1', '1');
+(1, '192.168.1.3', 'phassphrase', 'system1', 0);
 
 -- --------------------------------------------------------
 
@@ -142,17 +158,19 @@ CREATE TABLE IF NOT EXISTS `system_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `system_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `status` binary(1) NOT NULL,
+  `status` int(1) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `system_log`
 --
 
 INSERT INTO `system_log` (`id`, `system_id`, `user_id`, `status`, `timestamp`) VALUES
-(1, 1, 1, '1', '2015-11-19 01:49:56');
+(1, 1, 1, 1, '2015-11-19 01:49:56'),
+(2, 1, 1, 0, '2015-12-03 06:00:00'),
+(3, 1, 2, 1, '2015-12-05 06:44:44');
 
 -- --------------------------------------------------------
 
@@ -164,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(30) NOT NULL,
   `password` char(32) NOT NULL,
-  `keyCode` varchar(6) NOT NULL,
+  `keyCode` varchar(32) NOT NULL,
   `RFIDCode` varchar(10) NOT NULL,
   `system_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -175,8 +193,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `keyCode`, `RFIDCode`, `system_id`) VALUES
-(1, 'margo', 'password', '123456', '', 1),
-(2, 'test2', 'password2', '987654', '', 1);
+(1, 'margo', 'password', 'e10adc3949ba59abbe56e057f20f883e', '', 1),
+(2, 'test2', 'password2', '6c44e5cd17f0019c64b042e4a745412a', '', 1);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
