@@ -22,6 +22,7 @@ public class DisplayIP
     public static String passPhrase;
     //create a new object of database connection class
     static DBConnection db = new DBConnection();
+    static Encrypt enc = new Encrypt();
     
     
     public static void main(String[] args) throws InterruptedException, IOException, ParseException 
@@ -45,11 +46,14 @@ public class DisplayIP
                 passPhrase += randomInt;
             }
             passPhrase = passPhrase.substring(4,14);
+            enc.setPassword(passPhrase);
+            enc.encryptPassword();
             System.out.println();
             lcd.writeln(1, passPhrase, LCDTextAlignment.ALIGN_CENTER);
             lcd.backlight(1);
             System.out.println(ipAddress);
-            update = "UPDATE `system` SET `passphrase`=" + passPhrase  + " WHERE `id`=1;";
+            passPhrase = enc.getGeneratedPassword();
+            update = "UPDATE `system` SET passphrase = '" + passPhrase  + "' WHERE `id`=1;";
             db.getStatement().executeUpdate(update);
         }
         catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException e)

@@ -24,7 +24,7 @@ public class AlarmSystem extends RFID
         //Creates an int called status
         public static int status;
         //Created a boolean called rsStatus
-        public boolean rsStatus;
+        public int rsStatus;
 	public static void main(String[] args) 
         {
 		// TODO Auto-generated method stub
@@ -136,7 +136,7 @@ public class AlarmSystem extends RFID
             while (rset.next())
             {
                 //Gets the TinyInt status value from the database and assigns it to the rsStatus variable
-                rsStatus = rset.getBoolean(1);
+                rsStatus = rset.getInt(1);
                 //DEBUG
                 System.out.println("WHILE " + rsStatus); 
             }
@@ -154,14 +154,14 @@ public class AlarmSystem extends RFID
         //System.out.println("TEST !"); DEBUG
         checkStatus();
         //Checks if the System is armed or disarmed
-        if (rsStatus == true)
+        if (rsStatus == 1)
         {
             //Changes the status to 0
             status = 0;
             //DEBUG
             System.out.println("CHANGE STATUS" + status); 
         }
-        else if (rsStatus == false)
+        else if (rsStatus == 0)
         {
             //Changes the status to 1
             status = 1;
