@@ -30,15 +30,15 @@ public class KeyboardController
   /* 
    * Seen from the TOP of the keypad
    * https://www.adafruit.com/products/1824
-   *   ___________________________
-   *     |  |  |  |  |  |  |  |
-   *     x  25 24 23 18 22 17 4
+   *   _________________________________
+   *     |  |  |  |  |   |     |     |
+   *     x  19 13 6  5  SCLK  MISO  MOSI
    */
   
-  //                                              18                23                24                25
-  private Pin[] kpRow = new Pin[] { RaspiPin.GPIO_01, RaspiPin.GPIO_04, RaspiPin.GPIO_05, RaspiPin.GPIO_06 };
-  //                                               4                17                22
-  private Pin[] kpCol = new Pin[] { RaspiPin.GPIO_07, RaspiPin.GPIO_00, RaspiPin.GPIO_03 };
+  //                                               5                 6                13                19
+  private Pin[] kpRow = new Pin[] { RaspiPin.GPIO_21, RaspiPin.GPIO_22, RaspiPin.GPIO_23, RaspiPin.GPIO_24 };
+  //                                             MOSI              MISO               SCLK
+  private Pin[] kpCol = new Pin[] { RaspiPin.GPIO_12, RaspiPin.GPIO_13, RaspiPin.GPIO_14 };
 
   public KeyboardController()
   {
