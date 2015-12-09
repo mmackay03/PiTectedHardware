@@ -6,7 +6,6 @@
  * This class is meant to except user input on the keypad and compare the code entered with the user codes within the pitected
  * database. * will be used to disarm the system and # will be used to arm the system.
  */
-import java.io.IOException;
 
 public class Keypad {
 
@@ -14,11 +13,12 @@ public class Keypad {
 	static String enteredCode = "";
 	static char armDisarm = '#';
 //	static char disarm ='*';
-	// public static int status;
+	public static StatusIndicator si = new StatusIndicator();
+	public static int status;
 	static AlarmSystem sys = new AlarmSystem();//create a new object of the AlarmSystem class
 	
 	//main
-	public static void main(String[] args) throws InterruptedException, IOException {
+	public static void main(String[] args) {
 
 		//create new keyboard object
 		KeyboardController kbc = new KeyboardController();
@@ -34,9 +34,8 @@ public class Keypad {
 		      if (armDisarm == inputChar){//if # button is entered end the loop and arm the system is authorized user
 		    	  go = false;//end loop
 //		    	  status = 1;
-		    	  // encrypt.setPassword(enteredCode);
-		    	  // System.out.println(encrypt.encryptPassword());
-		    	  // System.out.println("STATUS: " + status);
+		    	  
+		    	  System.out.println("STATUS: " + status);
 //		      }else if(disarm == inputChar){//if * button is entered end the loop and un-arm the system is authorized user
 //			        go = false;//end loop
 //			        status = 0;
@@ -49,9 +48,8 @@ public class Keypad {
 		      try { Thread.sleep(200L); } catch (Exception ex) {}
 		    }
 	//	    System.out.println("Entered: " + enteredCode);
-		    // status = si.changeStatus();
-		    // System.out.println("STATUS AFTER: " + status);
-
+		    status = si.changeStatus();
+		    System.out.println("STATUS AFTER: " + status);
 		    sys.getCheckCode("keyCode", enteredCode);
 		    enteredCode ="";//reset the entered code for future entries
 		    kbc.shutdown();//gpio shutdown

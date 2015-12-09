@@ -4,7 +4,7 @@
  *         PiTechted
  */
 
-import java.sql.*;
+import com.pi4j.component.lcd.LCDTextAlignment;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
@@ -30,7 +30,7 @@ public class RFID
     //Initializes the gpio 04 to start low that is running the RFID reader
     final public  static GpioPinDigitalOutput rfidReader = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "RFID", PinState.LOW);
     // initializes the serial port on the PI
-    final public static Serial serialPort = SerialFactory.createInstance();
+    final private static Serial serialPort = SerialFactory.createInstance();
     //Creates a new object of the StatusIndicator class
     public static StatusIndicator si = new StatusIndicator();
     public static String card = "";
@@ -39,10 +39,9 @@ public class RFID
     public static LCD lcd = new LCD();
     //Creates a new object of the AlarmSystem class
     public static AlarmSystem sys = new AlarmSystem();
+    private static int rfidStatus = 0;
     
-    
-    
-    public static void main(String args[]) throws InterruptedException, UnsupportedEncodingException  
+   public static void main(String args[]) throws InterruptedException, UnsupportedEncodingException  
     {
         System.out.println("RFID CLass");
         while(true)
@@ -54,50 +53,71 @@ public class RFID
                 {
                     try
                     {
-                        //Shuts down the RFID so it can't read anymore
                         rfidReader.high();
-                   
+                        Thread.sleep(3000);
+                        System.out.println("Before While");
                          // Grabs the data from the card and inputs it into a string.
                         card = event.getData();
                         // A while statement that makes sure the data grabbed is the full RFID number and not a partial due to interference
-                        while(card.length() > 10)
+                        if(card.length() == 12)
                         {
+                            System.out.println("After While, Before if");
+                            if (rfidStatus == 0)
+                            {
+                                System.out.println("After if, Status = 1");
+                                rfidStatus = 1;
                             // Gets rid of the new line character in the beginning of the card. And gets rid of all characters after the last digit of the RFID number.
                             cutCard = card.substring(1,10);
                             //debug
                             System.out.println("Data Recieved: " + cutCard);
-                            //DEBUG
-                            //System.out.println("RFID Status = " + status);
-                            //status = si.changeStatus();
+                            //Changes the reader back to powerstate low and able to read info again
+                            //rfidReader.low();
                             sys.getCheckCode("RFIDCode", cutCard);
-                            //Resets both variables back to blank.
+                            //sys.getCheckCode("RFIDCode", cutCard, status);
                             card = "";
                             cutCard = "";
-                            
+                            }
                         }
-//                        Thread.sleep(2000);
-//                        rfidReader.low();
+                        else
+                        {
+                            lcd.writeln(0, "Not Accepted", LCDTextAlignment.ALIGN_CENTER);
+                            lcd.writeln(1, "Scan Card Again", LCDTextAlignment.ALIGN_CENTER);
+                        }
+
+                        
                     }
                     catch(SerialPortException ex) 
                     {
                         System.out.println(ex.getMessage());
                         return;
-                    }   
-//                    } catch (InterruptedException ex) {
-//                        Logger.getLogger(RFID.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(RFID.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    rfidStatus = 0;
+                    System.out.println("                            SETTING RFID LOW");
+                    try{
+                        Thread.sleep(500);
+                    }catch (InterruptedException ex){
+                        
+                    }
+                    rfidReader.low();
+                System.out.println("After catch");
+
                 }
+                
             });
-            Thread.sleep(2000);
-            //Activates the RFID so it can read again.
-            rfidReader.low();
+            
+            rfidStatus = 0;
+            System.out.println("After Listener, status = 0");
             try 
             {
                 serialPort.open("/dev/ttyAMA0" , 2400);
+                // System.out.println("Port Open");
+    //          serial1.open("/dev/ttyAMA0" , 2400);
                 while(true)
                 {
                     Thread.sleep(1000);
-                }  
+                }   
             }
             catch(SerialPortException ex)
             {

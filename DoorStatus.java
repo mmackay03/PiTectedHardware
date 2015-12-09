@@ -36,9 +36,10 @@ public class DoorStatus
     //array for all possible GPIO pins to be used for door switches
     //provision gpio pin as an input pin with its internal pull up
     static GpioPinDigitalInput[] gpPins = {
-             gpio.provisionDigitalInputPin(RaspiPin.GPIO_27, PinPullResistance.PULL_UP),
-             gpio.provisionDigitalInputPin(RaspiPin.GPIO_28, PinPullResistance.PULL_UP),
-             //gpio.provisionDigitalInputPin(RaspiPin.GPIO_28, PinPullResistance.PULL_UP),
+             gpio.provisionDigitalInputPin(RaspiPin.GPIO_07, PinPullResistance.PULL_UP),
+             gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, PinPullResistance.PULL_UP),
+             gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_UP),
+             gpio.provisionDigitalInputPin(RaspiPin.GPIO_03, PinPullResistance.PULL_UP),
      };
     
     public static void main(String args[]) throws SQLException, ClassNotFoundException,  InstantiationException, IllegalAccessException

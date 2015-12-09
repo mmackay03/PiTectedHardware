@@ -31,7 +31,7 @@ public class DBConnection {
 
 		//connection
 		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/pitected",
-				"root", "Tected");
+				"root", "jeep");
 		statement = con.createStatement();
 	}
 	void conClose() throws SQLException{
