@@ -40,7 +40,7 @@ public class DoorSwitch implements Runnable{
              gpio.provisionDigitalInputPin(RaspiPin.GPIO_03, PinPullResistance.PULL_UP),
      };
     
-    //get the array 
+    //assign the pin from door pin array 
     public DoorSwitch(int arrayPin){
         //set the array item number as the current pin to be used
         currPin = arrayPin;
@@ -66,9 +66,7 @@ public class DoorSwitch implements Runnable{
     //method to allow threading
     public void run(){
         try{
-
 //          System.out.println("<--Pi4J--> GPIO Listen Example ... started. " + "passed value: " + p);//debug
-           
             
             //set the GPIO with the gpPins array
             for (int i=1; i<gpPins.length; i++){
@@ -80,38 +78,30 @@ public class DoorSwitch implements Runnable{
 
             //Set the digital input for the door
             final GpioPinDigitalInput door = gpPins[tempPin];
-            System.out.println(doorID);//debug
+            // System.out.println(doorID);//debug
 
-            
-            // keep program running until user aborts (CTRL-C)
 //          System.out.println("READY: " + tempPin);//debug
             
             door.addListener(new GpioPinListenerDigital() {
                 @Override
                 public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                     
-                    
-//                  try{
-//                        db.dbConnection();//set up database connection
                         if(event.getState() == PinState.HIGH){//If door is open
                                 System.out.println(doorID);//debug
-                                System.out.println("Door Open! " + currPin);//debug
+                                // System.out.println("Door Open! " + currPin);//debug
+
                                 //update the door and door_log table in the database
                                 updateDB(1, doorID);
-                                                        lcd.clear();
-                                                        lcd.writeln(0, "Door " + doorID, LCDTextAlignment.ALIGN_CENTER);
-                                                        lcd.writeln(1, "OPEN", LCDTextAlignment.ALIGN_CENTER);
-                                                        lcd.backlight(1);
-                                                        try
-                                                        {
-                                                            Thread.sleep(5000);
-                                                        }
-                                                        catch(InterruptedException ex)
-                                                        {
-                                                            
-                                                        }
-                                                        lcd.clear();
-                                                        lcd.backlight(0);
+                                lcd.clear();
+                                lcd.writeln(0, "Door " + doorID, LCDTextAlignment.ALIGN_CENTER);
+                                lcd.writeln(1, "OPEN", LCDTextAlignment.ALIGN_CENTER);
+                                lcd.backlight(1);
+                                try{
+                                    Thread.sleep(5000);
+                                }catch(InterruptedException ex){                         
+                                }
+                                lcd.clear();
+                                lcd.backlight(0);
                                                         
                         }
                         if(event.getState() == PinState.LOW){//If door is closed
@@ -119,20 +109,16 @@ public class DoorSwitch implements Runnable{
                                 System.out.println("                Door Closed! " + currPin);//debug
                                 //update the door and door_log table in the database
                                 updateDB(0, doorID);
-                                                        lcd.clear();
-                                                        lcd.writeln(0, "Door " + doorID, LCDTextAlignment.ALIGN_CENTER);                                                        
-                                                        lcd.writeln(1, "CLOSED", LCDTextAlignment.ALIGN_CENTER);
-                                                        lcd.backlight(1);
-                                                        try
-                                                        {
-                                                            Thread.sleep(5000);
-                                                        }
-                                                        catch(InterruptedException ex)
-                                                        {
-                                                            
-                                                        }
-                                                        lcd.clear();
-                                                        lcd.backlight(0);
+                                lcd.clear();
+                                lcd.writeln(0, "Door " + doorID, LCDTextAlignment.ALIGN_CENTER);                                                        
+                                lcd.writeln(1, "CLOSED", LCDTextAlignment.ALIGN_CENTER);
+                                lcd.backlight(1);
+                                try{
+                                    Thread.sleep(5000);
+                                }catch(InterruptedException ex){
+                                }
+                                lcd.clear();
+                                lcd.backlight(0);
                         }
                     //System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());//debug
                 }

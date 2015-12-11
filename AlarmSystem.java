@@ -50,7 +50,7 @@ public class AlarmSystem extends RFID
 
                     if(hashAttribute.equals(rset.getString(attribute)))
                     {//If authorized user
-                            System.out.println("AUTHED");//debug
+                            // System.out.println("AUTHED");//debug
 //              System.out.println(rset.getInt("id"));//debugging: show user id
                             currUser.setUserID(rset.getInt("id"));
                             // armDisarm();//Update the status of the system
@@ -60,7 +60,7 @@ public class AlarmSystem extends RFID
                     while (rset.next()) {
 //                  System.out.println(rset.getString(attribute));//debugging: show each code in database after id 1
                             if(hashAttribute.equals(rset.getString(attribute))){//If authorized user
-                                    System.out.println("Authorized User");//debug
+                                    // System.out.println("Authorized User");//debug
                                     currUser.setUserID(rset.getInt("id"));//set the user id of the corresponding code
                                     // armDisarm();//Update the status of the system
                                     checkDoors();
