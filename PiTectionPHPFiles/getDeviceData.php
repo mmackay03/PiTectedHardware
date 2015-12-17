@@ -4,7 +4,7 @@ require('header.php');
   
 
 
-$result = $connection->query("SELECT name, status FROM door UNION SELECT name, status FROM motion WHERE status=1");
+$result = $connection->query("SELECT name, status FROM door UNION SELECT name, status");
 
 
 $user = array();
