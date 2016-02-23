@@ -1,201 +1,108 @@
--- phpMyAdmin SQL Dump
--- version 4.0.4.1
--- http://www.phpmyadmin.net
---
--- Host: 127.0.0.1
--- Generation Time: Dec 06, 2015 at 02:56 AM
--- Server version: 5.5.32
--- PHP Version: 5.4.16
+-- MySQL Workbench Forward Engineering
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema pitected
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema pitected
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `pitected` DEFAULT CHARACTER SET latin1 ;
+USE `pitected` ;
+
+-- -----------------------------------------------------
+-- Table `pitected`.`device_type`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `pitected`.`device_type` (
+  `id` INT(11) NOT NULL,
+  `name` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+-- -----------------------------------------------------
+-- Table `pitected`.`devices`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `pitected`.`devices` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(20) NOT NULL,
+  `type` INT(11) NOT NULL DEFAULT '0',
+  `status` INT(1) NULL DEFAULT NULL,
+  `nodeID` VARCHAR(2) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `device_typeFK_idx` (`type` ASC),
+  CONSTRAINT `device_typeFK`
+    FOREIGN KEY (`type`)
+    REFERENCES `pitected`.`device_type` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = latin1;
 
---
--- Database: `pitected`
---
-CREATE DATABASE IF NOT EXISTS `pitected` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `pitected`;
 
--- --------------------------------------------------------
+-- -----------------------------------------------------
+-- Table `pitected`.`system`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `pitected`.`system` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `staticIP` VARCHAR(15) NOT NULL,
+  `passphrase` CHAR(32) NOT NULL,
+  `status` INT(1) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = latin1;
 
---
--- Table structure for table `door`
---
 
-CREATE TABLE IF NOT EXISTS `door` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) NOT NULL,
-  `status` int(1) NOT NULL,
-  `system_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+-- -----------------------------------------------------
+-- Table `pitected`.`users`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `pitected`.`users` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(30) NOT NULL,
+  `password` VARCHAR(45) NOT NULL,
+  `pin` INT(4) NOT NULL,
+  `session` VARCHAR(45) NOT NULL,
+  `privileges` VARCHAR(3) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = latin1;
 
---
--- Dumping data for table `door`
---
 
-INSERT INTO `door` (`id`, `name`, `status`, `system_id`) VALUES
-(1, 'Door 1', 0, 1),
-(2, 'Door 2', 0, 1),
-(3, 'Door 3', 0, 1),
-(4, 'Door 4', 0, 1);
+-- -----------------------------------------------------
+-- Table `pitected`.`system_logs`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `pitected`.`system_logs` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `type` INT(11) NOT NULL,
+  `user_id` INT(11) NOT NULL,
+  `status` INT(1) NOT NULL,
+  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `user_idFK_idx` (`user_id` ASC),
+  INDEX `log_typeFK_idx` (`type` ASC),
+  CONSTRAINT `log_typeFK`
+    FOREIGN KEY (`type`)
+    REFERENCES `pitected`.`device_type` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `user_idFK`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `pitected`.`users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = latin1;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `door_log`
---
-
-CREATE TABLE IF NOT EXISTS `door_log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `door_id` int(11) NOT NULL,
-  `status` int(1) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
-
---
--- Dumping data for table `door_log`
---
-
-INSERT INTO `door_log` (`id`, `door_id`, `status`, `timestamp`) VALUES
-(1, 1, 0, '2015-12-01 06:00:00'),
-(2, 2, 1, '2015-12-02 06:00:00');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `motion`
---
-
-CREATE TABLE IF NOT EXISTS `motion` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) NOT NULL,
-  `status` int(1) NOT NULL DEFAULT '0',
-  `system_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
---
--- Dumping data for table `motion`
---
-
-INSERT INTO `motion` (`id`, `name`, `status`, `system_id`) VALUES
-(1, 'Motion 1', 0, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `motion_log`
---
-
-CREATE TABLE IF NOT EXISTS `motion_log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `motion_id` int(11) NOT NULL,
-  `status` int(1) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
-
---
--- Dumping data for table `motion_log`
---
-
-INSERT INTO `motion_log` (`id`, `motion_id`, `status`, `timestamp`) VALUES
-(1, 1, 1, '2015-12-05 06:22:46'),
-(2, 1, 0, '2015-12-03 06:00:00');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `notification_settings`
---
-
-CREATE TABLE IF NOT EXISTS `notification_settings` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `door_notification` binary(1) NOT NULL,
-  `motion_notification` binary(1) NOT NULL,
-  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `system`
---
-
-CREATE TABLE IF NOT EXISTS `system` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `staticIP` varchar(15) NOT NULL,
-  `passphrase` char(32) NOT NULL,
-  `name` varchar(30) NOT NULL,
-  `status` int(1) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
---
--- Dumping data for table `system`
---
-
-INSERT INTO `system` (`id`, `staticIP`, `passphrase`, `name`, `status`) VALUES
-(1, '192.168.1.3', 'phassphrase', 'system1', 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `system_log`
---
-
-CREATE TABLE IF NOT EXISTS `system_log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `system_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `status` int(1) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
-
---
--- Dumping data for table `system_log`
---
-
-INSERT INTO `system_log` (`id`, `system_id`, `user_id`, `status`, `timestamp`) VALUES
-(1, 1, 1, 1, '2015-11-19 01:49:56'),
-(2, 1, 1, 0, '2015-12-03 06:00:00'),
-(3, 1, 2, 1, '2015-12-05 06:44:44');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `users`
---
-
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(30) NOT NULL,
-  `password` char(32) NOT NULL,
-  `keyCode` varchar(32) NOT NULL,
-  `RFIDCode` varchar(10) NOT NULL,
-  `system_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `username`, `password`, `keyCode`, `RFIDCode`, `system_id`) VALUES
-(1, 'margo', 'password', 'e10adc3949ba59abbe56e057f20f883e', '', 1),
-(2, 'test2', 'password2', '6c44e5cd17f0019c64b042e4a745412a', '', 1);
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
