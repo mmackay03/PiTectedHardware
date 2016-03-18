@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.11
+-- version 4.1.7
 -- http://www.phpmyadmin.net
 --
--- Host: 127.0.0.1
--- Generation Time: Jan 25, 2016 at 05:59 PM
--- Server version: 5.6.21
--- PHP Version: 5.6.3
+-- Host: localhost
+-- Generation Time: Mar 14, 2016 at 09:59 PM
+-- Server version: 5.1.71-community-log
+-- PHP Version: 5.3.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -19,7 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `pitected`
 --
-
+CREATE DATABASE IF NOT EXISTS `pitected`;
+USE `pitected`;
 -- --------------------------------------------------------
 
 --
@@ -28,7 +29,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `cameras` (
   `id` int(11) NOT NULL,
-  `camera_name` varchar(45) DEFAULT NULL
+  `camera_name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -41,7 +43,9 @@ CREATE TABLE IF NOT EXISTS `camera_log` (
   `id` int(11) NOT NULL,
   `camera_id` int(11) DEFAULT NULL,
   `path` varchar(45) DEFAULT NULL,
-  `timestamp` timestamp NULL DEFAULT NULL
+  `timestamp` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `camera_fk_idx` (`camera_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -51,11 +55,12 @@ CREATE TABLE IF NOT EXISTS `camera_log` (
 --
 
 CREATE TABLE IF NOT EXISTS `door` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
   `status` int(1) NOT NULL,
-  `system_id` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+  `system_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `door`
@@ -74,11 +79,13 @@ INSERT INTO `door` (`id`, `name`, `status`, `system_id`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `door_log` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `door_id` int(11) NOT NULL,
   `status` int(1) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `door_fk_idx` (`door_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `door_log`
@@ -95,11 +102,12 @@ INSERT INTO `door_log` (`id`, `door_id`, `status`, `timestamp`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `motion` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
   `status` int(1) NOT NULL DEFAULT '0',
-  `system_id` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  `system_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `motion`
@@ -115,11 +123,13 @@ INSERT INTO `motion` (`id`, `name`, `status`, `system_id`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `motion_log` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `motion_id` int(11) NOT NULL,
   `status` int(1) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `motion_fk_idx` (`motion_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `motion_log`
@@ -137,7 +147,8 @@ INSERT INTO `motion_log` (`id`, `motion_id`, `status`, `timestamp`) VALUES
 
 CREATE TABLE IF NOT EXISTS `privileges` (
   `id` int(11) NOT NULL,
-  `privilege_name` varchar(45) DEFAULT NULL
+  `privilege_name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -156,12 +167,13 @@ INSERT INTO `privileges` (`id`, `privilege_name`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `system` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `staticIP` varchar(15) NOT NULL,
   `passphrase` char(32) NOT NULL,
   `name` varchar(30) NOT NULL,
-  `status` int(1) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  `status` int(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `system`
@@ -177,12 +189,15 @@ INSERT INTO `system` (`id`, `staticIP`, `passphrase`, `name`, `status`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `system_log` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `system_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `status` int(1) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `system_fk_idx` (`system_id`),
+  KEY `user_fk_idx` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `system_log`
@@ -200,21 +215,26 @@ INSERT INTO `system_log` (`id`, `system_id`, `user_id`, `status`, `timestamp`) V
 --
 
 CREATE TABLE IF NOT EXISTS `users` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(30) NOT NULL,
   `password` char(32) NOT NULL,
   `keyCode` varchar(32) NOT NULL,
   `RFIDCode` varchar(10) NOT NULL,
-  `system_id` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+  `system_id` int(11) NOT NULL,
+  `session` varchar(45) NOT NULL,
+  `gcm_token` varchar(155) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `keyCode`, `RFIDCode`, `system_id`) VALUES
-(1, 'margo', 'password', 'e10adc3949ba59abbe56e057f20f883e', '', 1),
-(2, 'test2', 'password2', '6c44e5cd17f0019c64b042e4a745412a', '', 1);
+INSERT INTO `users` (`id`, `username`, `password`, `keyCode`, `RFIDCode`, `system_id`, `session`, `gcm_token`) VALUES
+(1, 'margo', '805a1f1ed2fc112568447dc6e170c52a', 'e10adc3949ba59abbe56e057f20f883e', '', 1, '56d07788d2684', 'cGOKvGiNTBQ:APA91bHtetf6NqV30MOODSvZyikKeEz0nZsvRKlNtmF7NU-dFoGRQcUIfK-Dsc4n2KB5_buiVub4nP6yMjr2k-ECazA6ec-0fQNOQ4tZ2_ClvzNG08uwPv7Frjc9r32oMGOL4veQm5Bd'),
+(2, 'test2', 'password2', '6c44e5cd17f0019c64b042e4a745412a', '', 1, '', ''),
+(3, 'android', 'studio', '', '', 0, '', ''),
+(4, 'android', 'studio', '', '', 1, '1', '');
 
 -- --------------------------------------------------------
 
@@ -225,153 +245,11 @@ INSERT INTO `users` (`id`, `username`, `password`, `keyCode`, `RFIDCode`, `syste
 CREATE TABLE IF NOT EXISTS `user_privilege` (
   `id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `privilege_id` int(11) DEFAULT NULL
+  `privilege_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `privilege_fk_idx` (`privilege_id`),
+  KEY `user_fk_idx` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `cameras`
---
-ALTER TABLE `cameras`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `camera_log`
---
-ALTER TABLE `camera_log`
- ADD PRIMARY KEY (`id`), ADD KEY `camera_fk_idx` (`camera_id`);
-
---
--- Indexes for table `door`
---
-ALTER TABLE `door`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `door_log`
---
-ALTER TABLE `door_log`
- ADD PRIMARY KEY (`id`), ADD KEY `door_fk_idx` (`door_id`);
-
---
--- Indexes for table `motion`
---
-ALTER TABLE `motion`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `motion_log`
---
-ALTER TABLE `motion_log`
- ADD PRIMARY KEY (`id`), ADD KEY `motion_fk_idx` (`motion_id`);
-
---
--- Indexes for table `privileges`
---
-ALTER TABLE `privileges`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `system`
---
-ALTER TABLE `system`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `system_log`
---
-ALTER TABLE `system_log`
- ADD PRIMARY KEY (`id`), ADD KEY `system_fk_idx` (`system_id`), ADD KEY `user_fk_idx` (`user_id`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `user_privilege`
---
-ALTER TABLE `user_privilege`
- ADD PRIMARY KEY (`id`), ADD KEY `privilege_fk_idx` (`privilege_id`), ADD KEY `user_fk_idx` (`user_id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `door`
---
-ALTER TABLE `door`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT for table `door_log`
---
-ALTER TABLE `door_log`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `motion`
---
-ALTER TABLE `motion`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `motion_log`
---
-ALTER TABLE `motion_log`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `system`
---
-ALTER TABLE `system`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `system_log`
---
-ALTER TABLE `system_log`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `camera_log`
---
-ALTER TABLE `camera_log`
-ADD CONSTRAINT `camera_fk` FOREIGN KEY (`camera_id`) REFERENCES `mydb`.`cameras` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Constraints for table `door_log`
---
-ALTER TABLE `door_log`
-ADD CONSTRAINT `door_fk` FOREIGN KEY (`door_id`) REFERENCES `door` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Constraints for table `motion_log`
---
-ALTER TABLE `motion_log`
-ADD CONSTRAINT `motion_fk` FOREIGN KEY (`motion_id`) REFERENCES `motion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Constraints for table `system_log`
---
-ALTER TABLE `system_log`
-ADD CONSTRAINT `sys_fk` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `users_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Constraints for table `user_privilege`
---
-ALTER TABLE `user_privilege`
-ADD CONSTRAINT `privilege_fk` FOREIGN KEY (`privilege_id`) REFERENCES `mydb`.`privileges` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
